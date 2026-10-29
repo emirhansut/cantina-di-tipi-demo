@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QR Kod Üretici</title>
+<style>
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:#1a0f0d;color:#f3ead8;font-family:system-ui,sans-serif}
+main{width:min(92vw,460px);text-align:center;padding:32px 0}
+h1{font-weight:500;font-size:22px;margin:0 0 6px}
+p{font-size:14px;opacity:.7;margin:0 0 22px}
+input{width:100%;box-sizing:border-box;padding:14px;border-radius:8px;border:1px solid #c9a45c;background:#2b1a17;color:#f3ead8;font-size:15px}
+#box{background:#fff;padding:18px;border-radius:12px;margin:24px auto;width:max-content;min-height:60px}
+#box canvas,#box img{display:block}
+button{padding:13px 28px;border-radius:999px;border:0;background:#c9a45c;color:#1a0f0d;font-size:14px;letter-spacing:.08em;cursor:pointer}
+button:disabled{opacity:.4;cursor:default}
+</style>
+</head>
+<body>
+<main>
+  <h1>La Cantina di Tipì · QR Kod</h1>
+  <p>Sitenin yayındaki adresini yapıştır, QR kodu PNG olarak indir.</p>
+  <input id="u" type="url" placeholder="https://..." autocomplete="off">
+  <div id="box"></div>
+  <button id="dl" disabled>PNG olarak indir</button>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const u=document.getElementById("u"),box=document.getElementById("box"),dl=document.getElementById("dl");
+let qr;
+function draw(){
+  box.innerHTML="";dl.disabled=true;
+  const v=u.value.trim();
+  if(!/^https?:\/\/.+\..+/.test(v))return;
+  qr=new QRCode(box,{text:v,width:1024,height:1024,correctLevel:QRCode.CorrectLevel.H});
+  box.querySelectorAll("canvas,img").forEach(e=>{e.style.width="280px";e.style.height="280px"});
+  dl.disabled=false;
+}
+u.addEventListener("input",draw);
+dl.onclick=()=>{
+  const c=box.querySelector("canvas");
+  const a=document.createElement("a");
+  a.download="la-cantina-di-tipi-qr.png";
+  a.href=c?c.toDataURL("image/png"):box.querySelector("img").src;
+  a.click();
+};
+</script>
+</body>
+</html>
